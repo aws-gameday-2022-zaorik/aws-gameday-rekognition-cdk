@@ -151,7 +151,7 @@ export class Wafv2Stack extends cdk.Stack {
 
         if (addresses != null) {
 
-            const wafIPSet = new wafv2.CfnIPSet(scope, `${projectName}WafIPSet`, {
+            const wafIPSet = new wafv2.CfnIPSet(this, `${projectName}WafIPSet`, {
                 name: `${projectName}-${resourceType.toLowerCase()}-waf-ip-set`,
                 ipAddressVersion: 'IPV4',
                 scope: resourceType.toUpperCase() == 'CLOUDFRONT' ? 'CLOUDFRONT' : 'REGIONAL',
@@ -221,7 +221,7 @@ export class Wafv2Stack extends cdk.Stack {
 
 
         // Defination WebACL
-        const webAcl = new wafv2.CfnWebACL(scope, `${projectName}WafAcl`, {
+        const webAcl = new wafv2.CfnWebACL(this, `${projectName}WafAcl`, {
             defaultAction: { allow: {} },
             name: `${projectName}-${resourceType.toLowerCase()}-waf-web-acl`,
             scope: resourceType.toUpperCase() == 'CLOUDFRONT' ? 'CLOUDFRONT' : 'REGIONAL',
@@ -235,7 +235,7 @@ export class Wafv2Stack extends cdk.Stack {
         
 
         
-        new wafv2.CfnWebACLAssociation(scope, `${projectName}WebAclAssociation`, {
+        new wafv2.CfnWebACLAssociation(this, `${projectName}WebAclAssociation`, {
             resourceArn: resourceArn,
             webAclArn: webAcl.attrArn
             });

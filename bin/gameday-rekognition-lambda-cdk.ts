@@ -19,4 +19,7 @@ new Wafv2Stack(app, 'GamedayWafv2Stack', {
     resourceArn: resourceArn, 
     rateLimit: 100, 
     geoLimit: ['JP'] 
+},
+{
+    env: { region: 'ap-northeast-1' }
 })
