@@ -7,22 +7,22 @@ import { BuildApiGateway } from './BuildApiGateway';
 import { BuildWaf } from './BuildWaf';
 
 export class GamedayRekognitionLambdaCdkStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: Construct, id: string, projectName: string, props?: cdk.StackProps, stageName?:string ) {
     super(scope, id, props);
-    const projectName = 'gameday-zeorik'
-    const stageName = null 
+    
     const path = require('path');
     // apigateway
-    const apiGW = BuildApiGateway(this, { projectName: projectName})
-    const resourceArn = `arn:aws:apigateway:ap-northeast-1::/restapis/${apiGW.restApiId}/stages/${ stageName ? stageName :'dev' }`;
+    const apiGW = BuildApiGateway(this, { projectName: projectName, stageName: stageName });
+    const resourceArn = `arn:aws:apigateway:ap-northeast-1::/restapis/${apiGW.restApiId}/stages/${ stageName ? stageName : 'dev' }`;
     BuildWaf(this, { projectName: projectName, resourceType: 'ApiGateway', resourceArn: resourceArn, rateLimit: 100, geoLimit: ['JP']})
 
-    // TODO：authorizerの実装
+    // authorizerの実装
     // IAM: https://dev.classmethod.jp/articles/api-gateway-iam-authentication-sigv4/
     // lambda: https://blog.i-tale.jp/2021/09/d15/
     //        https://speakerdeck.com/shiraishi3/yusukesudexue-bu-api-gateway-plus-lambda-authorizer-shi-jian-ru-men-cdk?slide=25
     // Cognito: https://dev.classmethod.jp/articles/api-gateway-rest-apicognito-user-pool-authorizerlambda-i-tried-building-a-functional-configuration-with-aws-cdk-v2/
-    // lambda
+    
+
     const lambdaRole = new iam.Role(
       this, "RekognitionLambdaRole", {
         assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),

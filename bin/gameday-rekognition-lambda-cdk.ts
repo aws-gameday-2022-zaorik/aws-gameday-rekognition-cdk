@@ -4,4 +4,4 @@ import * as cdk from 'aws-cdk-lib';
 import { GamedayRekognitionLambdaCdkStack } from '../lib/gameday-rekognition-lambda-cdk-stack';
 
 const app = new cdk.App();
-new GamedayRekognitionLambdaCdkStack(app, 'GamedayRekognitionLambdaCdkStack');
+new GamedayRekognitionLambdaCdkStack(app, 'GamedayRekognitionLambdaCdkStack', 'gameday-huang' );
