@@ -239,7 +239,7 @@ export function BuildWaf  (scope:Construct, props:IWafProps) { {
         });
     
 
-    new wafv2.CfnWebACLAssociation(scope, 'TestWebAclAssociation', {
+    new wafv2.CfnWebACLAssociation(scope, `${projectName}WebAclAssociation`, {
         resourceArn: resourceArn,
         webAclArn: webAcl.attrArn
         });
@@ -247,6 +247,7 @@ export function BuildWaf  (scope:Construct, props:IWafProps) { {
 }
 
 // 他使えそうなルールを
+// https://serverlessland.com/patterns/apigw-waf-cdk
 // {
 //     name: `demo-api-auth-gateway-sqli-rule`,
 //     priority: 40,
