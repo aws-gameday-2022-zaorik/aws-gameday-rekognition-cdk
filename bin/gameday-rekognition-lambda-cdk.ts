@@ -1,13 +1,22 @@
 #!/usr/bin/env node
 import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
-import { GamedayRekognitionLambdaCdkStack } from '../lib/gameday-rekognition-lambda-cdk-stack';
+import { RekgonitionStack } from '../lib/RekognitionStack';
+import { Wafv2Stack } from '../lib/Wafv2Stack';
 
 const app = new cdk.App();
-new GamedayRekognitionLambdaCdkStack(app, 
-    'GamedayRekognitionLambdaCdkStack', 
-    'huang-gameday', 
+const projectName = 'huang-gameday'
+const { apiGW, resourceArn } = new RekgonitionStack(app,
+    'GamedayRekognitionStack',
+    projectName,
     {
-        env: {region: 'ap-northeast-1'}
+        env: { region: 'ap-northeast-1' }
     }
 );
+new Wafv2Stack(app, 'GamedayWafv2Stack', { 
+    projectName: projectName, 
+    resourceType: 'ApiGateway', 
+    resourceArn: resourceArn, 
+    rateLimit: 100, 
+    geoLimit: ['JP'] 
+})

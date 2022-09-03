@@ -5,17 +5,19 @@ import * as lambda from 'aws-cdk-lib/aws-lambda'
 import * as apigateway from 'aws-cdk-lib/aws-apigateway'
 import * as wafv2 from 'aws-cdk-lib/aws-wafv2'
 import { BuildApiGateway } from './BuildApiGateway';
-import { BuildWaf } from './BuildWaf';
 
-export class GamedayRekognitionLambdaCdkStack extends cdk.Stack {
+export class RekgonitionStack extends cdk.Stack {
+  public apiGW: apigateway.IRestApi
+  public resourceArn: string
+  
   constructor(scope: Construct, id: string, projectName: string, props?: cdk.StackProps, stageName?:string ) {
     super(scope, id, props);
     
     const path = require('path');
     // apigateway
-    const apiGW = BuildApiGateway(this, { projectName: projectName, stageName: stageName });
-    const resourceArn = `arn:aws:apigateway:ap-northeast-1::/restapis/${apiGW.restApiId}/stages/${ stageName ? stageName : 'dev' }`;
-    BuildWaf(this, { projectName: projectName, resourceType: 'ApiGateway', resourceArn: resourceArn, rateLimit: 100, geoLimit: ['JP']})
+    this.apiGW = BuildApiGateway(this, { projectName: projectName, stageName: stageName });
+    this.resourceArn = `arn:aws:apigateway:ap-northeast-1::/restapis/${this.apiGW.restApiId}/stages/${ stageName ? stageName : 'dev' }`;
+    // BuildWaf(this, { projectName: projectName, resourceType: 'ApiGateway', resourceArn: resourceArn, rateLimit: 100, geoLimit: ['JP']})
 
     // authorizerの実装
     // IAM: https://dev.classmethod.jp/articles/api-gateway-iam-authentication-sigv4/
@@ -45,7 +47,7 @@ export class GamedayRekognitionLambdaCdkStack extends cdk.Stack {
     lambdaRole.addManagedPolicy(iam.ManagedPolicy.fromAwsManagedPolicyName('AmazonS3ReadOnlyAccess'))
     
     // Create API
-    const imageResource = apiGW.root.addResource('image')
+    const imageResource = this.apiGW.root.addResource('image')
     imageResource.addMethod('GET', 
       new apigateway.LambdaIntegration(
         fn,

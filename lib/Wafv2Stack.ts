@@ -1,3 +1,4 @@
+import * as cdk from 'aws-cdk-lib'
 import { Construct } from "constructs"; 
 import * as wafv2 from 'aws-cdk-lib/aws-wafv2';
 import * as logs from 'aws-cdk-lib/aws-logs';
@@ -141,109 +142,103 @@ const defaultRules: IWafRule[] = [
 
 ]
 
+export class Wafv2Stack extends cdk.Stack {
+    constructor(scope: Construct, id: string, wafProps: IWafProps, props?: cdk.StackProps) {
+        super(scope, id, props);
+        const { projectName, resourceType, resourceArn, rateLimit, geoLimit, addresses  } = wafProps
+        var priorityCount: number = 7
+        const rules = defaultRules
 
-export function BuildWaf  (scope:Construct, props:IWafProps) { {
-    
-    const projectName = props.projectName
-    const resourceType = props.resourceType
-    const resourceArn = props.resourceArn
-    const rateLimit = props.rateLimit
-    const geoLimit = props.geoLimit
-    const addresses = props.addresses
+        if (addresses != null) {
 
-    var priorityCount: number = 7
-    const rules = defaultRules
+            const wafIPSet = new wafv2.CfnIPSet(scope, `${projectName}WafIPSet`, {
+                name: `${projectName}-${resourceType.toLowerCase()}-waf-ip-set`,
+                ipAddressVersion: 'IPV4',
+                scope: resourceType.toUpperCase() == 'CLOUDFRONT' ? 'CLOUDFRONT' : 'REGIONAL',
+                addresses: addresses
+            })
 
-    if (addresses != null) {
+            rules.push({
+                priority: 1,
+                name: 'TestWafWebAclIpSetRule',
+                action: { allow: {} },
+                visibilityConfig: {
+                sampledRequestsEnabled: true,
+                cloudWatchMetricsEnabled: true,
+                metricName: `${projectName}-${resourceType.toLowerCase()}-WafWebAclIpSetRule`,
+                },
+                statement: {
+                ipSetReferenceStatement: {
+                    arn: wafIPSet.attrArn,
+                },
+                },
+            }
+            )
+            priorityCount += 1; 
+        }
 
-        const wafIPSet = new wafv2.CfnIPSet(scope, `${projectName}WafIPSet`, {
-            name: `${projectName}-${resourceType.toLowerCase()}-waf-ip-set`,
-            ipAddressVersion: 'IPV4',
+        if (rateLimit != null) {
+            // ratelimitRule
+            // AWS WAF checks the rate of requests every 30 seconds, and counts requests for the prior five minutes each time. 
+            // Because of this, it's possible for an IP address to send requests at too high a rate for 30 seconds 
+            // before AWS WAF detects and blocks it. AWS WAF can block up to 10,000 IP addresses.
+            rules.push({
+                name: "rateLimitRule",
+                priority: priorityCount,
+                action: { block: {} },
+                visibilityConfig: {
+                    metricName: `${projectName}-${resourceType.toLowerCase()}-rateLimitRule`, 
+                    cloudWatchMetricsEnabled: true,
+                    sampledRequestsEnabled: false
+                },
+                statement: {
+                    rateBasedStatement: {
+                        aggregateKeyType: "IP", 
+                        limit: rateLimit
+                    }
+                }
+            })
+            priorityCount += 1;    
+        }
+
+        if (geoLimit != null) {
+            rules.push ({
+                name: `geoLimitrule`,
+                priority: 30,
+                action: { allow: {} },
+                visibilityConfig: {
+                    metricName: `${projectName}-${resourceType.toLowerCase()}-geoLimitRule`,
+                    cloudWatchMetricsEnabled: true,
+                    sampledRequestsEnabled: false
+                },
+                statement: {
+                    geoMatchStatement: {
+                        countryCodes: geoLimit
+                    }
+                }
+            })
+        }
+
+
+        // Defination WebACL
+        const webAcl = new wafv2.CfnWebACL(scope, `${projectName}WafAcl`, {
+            defaultAction: { allow: {} },
+            name: `${projectName}-${resourceType.toLowerCase()}-waf-web-acl`,
             scope: resourceType.toUpperCase() == 'CLOUDFRONT' ? 'CLOUDFRONT' : 'REGIONAL',
-            addresses: addresses
-        })
-
-        rules.push({
-            priority: 1,
-            name: 'TestWafWebAclIpSetRule',
-            action: { allow: {} },
             visibilityConfig: {
-              sampledRequestsEnabled: true,
-              cloudWatchMetricsEnabled: true,
-              metricName: `${projectName}-${resourceType.toLowerCase()}-WafWebAclIpSetRule`,
-            },
-            statement: {
-              ipSetReferenceStatement: {
-                arn: wafIPSet.attrArn,
-              },
-            },
-          }
-        )
-        priorityCount += 1; 
-    }
-
-    if (rateLimit != null) {
-        // ratelimitRule
-        // AWS WAF checks the rate of requests every 30 seconds, and counts requests for the prior five minutes each time. 
-        // Because of this, it's possible for an IP address to send requests at too high a rate for 30 seconds 
-        // before AWS WAF detects and blocks it. AWS WAF can block up to 10,000 IP addresses.
-        rules.push({
-            name: "rateLimitRule",
-            priority: priorityCount,
-            action: { block: {} },
-            visibilityConfig: {
-                metricName: `${projectName}-${resourceType.toLowerCase()}-rateLimitRule`, 
                 cloudWatchMetricsEnabled: true,
-                sampledRequestsEnabled: false
+                sampledRequestsEnabled: true,
+                metricName: `${projectName.toLowerCase()}${resourceType.toLowerCase()}-WafWebAcl`,
             },
-            statement: {
-                rateBasedStatement: {
-                    aggregateKeyType: "IP", 
-                    limit: rateLimit
-                }
-            }
-        })
-        priorityCount += 1;    
-    }
+            rules: rules
+            });
+        
 
-    if (geoLimit != null) {
-        rules.push ({
-            name: `geoLimitrule`,
-            priority: 30,
-            action: { allow: {} },
-            visibilityConfig: {
-                metricName: `${projectName}-${resourceType.toLowerCase()}-geoLimitRule`,
-                cloudWatchMetricsEnabled: true,
-                sampledRequestsEnabled: false
-            },
-            statement: {
-                geoMatchStatement: {
-                    countryCodes: geoLimit
-                }
-            }
-        })
-    }
-
-
-    // Defination WebACL
-    const webAcl = new wafv2.CfnWebACL(scope, `${projectName}WafAcl`, {
-        defaultAction: { allow: {} },
-        name: `${projectName}-${resourceType.toLowerCase()}-waf-web-acl`,
-        scope: resourceType.toUpperCase() == 'CLOUDFRONT' ? 'CLOUDFRONT' : 'REGIONAL',
-        visibilityConfig: {
-            cloudWatchMetricsEnabled: true,
-            sampledRequestsEnabled: true,
-            metricName: `${projectName.toLowerCase()}${resourceType.toLowerCase()}-WafWebAcl`,
-        },
-        rules: rules
-        });
-    
-
-    
-    new wafv2.CfnWebACLAssociation(scope, `${projectName}WebAclAssociation`, {
-        resourceArn: resourceArn,
-        webAclArn: webAcl.attrArn
-        });
+        
+        new wafv2.CfnWebACLAssociation(scope, `${projectName}WebAclAssociation`, {
+            resourceArn: resourceArn,
+            webAclArn: webAcl.attrArn
+            });
     }
 }
 
