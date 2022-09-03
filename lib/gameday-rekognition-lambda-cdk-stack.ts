@@ -15,13 +15,7 @@ export class GamedayRekognitionLambdaCdkStack extends cdk.Stack {
     // apigateway
     const apiGW = BuildApiGateway(this, { projectName: projectName, stageName: stageName });
     const resourceArn = `arn:aws:apigateway:ap-northeast-1::/restapis/${apiGW.restApiId}/stages/${ stageName ? stageName : 'dev' }`;
-    const webAcl = BuildWaf(this, { projectName: projectName, resourceType: 'ApiGateway', resourceArn: resourceArn, rateLimit: 100, geoLimit: ['JP']})
-
-
-    const association = new wafv2.CfnWebACLAssociation(this, `${projectName}WebAclAssociation`, {
-      resourceArn: resourceArn,
-      webAclArn: webAcl.attrArn
-      });
+    BuildWaf(this, { projectName: projectName, resourceType: 'ApiGateway', resourceArn: resourceArn, rateLimit: 100, geoLimit: ['JP']})
 
     // authorizerの実装
     // IAM: https://dev.classmethod.jp/articles/api-gateway-iam-authentication-sigv4/
