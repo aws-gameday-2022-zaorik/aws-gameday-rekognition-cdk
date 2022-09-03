@@ -151,7 +151,7 @@ export function BuildWaf  (scope:Construct, props:IWafProps) { {
     const geoLimit = props.geoLimit
     const addresses = props.addresses
 
-    var priorityCount: number = 6
+    var priorityCount: number = 7
     const rules = defaultRules
 
     if (addresses != null) {
