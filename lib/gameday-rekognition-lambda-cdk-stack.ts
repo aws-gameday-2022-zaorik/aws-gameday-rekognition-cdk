@@ -18,12 +18,11 @@ export class GamedayRekognitionLambdaCdkStack extends cdk.Stack {
     const webAcl = BuildWaf(this, { projectName: projectName, resourceType: 'ApiGateway', resourceArn: resourceArn, rateLimit: 100, geoLimit: ['JP']})
 
 
-    const association = new wafv2.CfnWebACLAssociation(scope, `${projectName}WebAclAssociation`, {
+    const association = new wafv2.CfnWebACLAssociation(this, `${projectName}WebAclAssociation`, {
       resourceArn: resourceArn,
       webAclArn: webAcl.attrArn
       });
 
-    association.addDependsOn(apiGW)
     // authorizerの実装
     // IAM: https://dev.classmethod.jp/articles/api-gateway-iam-authentication-sigv4/
     // lambda: https://blog.i-tale.jp/2021/09/d15/
