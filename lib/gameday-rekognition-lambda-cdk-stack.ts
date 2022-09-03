@@ -3,6 +3,7 @@ import { Construct } from 'constructs';
 import * as iam from 'aws-cdk-lib/aws-iam'
 import * as lambda from 'aws-cdk-lib/aws-lambda'
 import * as apigateway from 'aws-cdk-lib/aws-apigateway'
+import * as wafv2 from 'aws-cdk-lib/aws-wafv2'
 import { BuildApiGateway } from './BuildApiGateway';
 import { BuildWaf } from './BuildWaf';
 
@@ -14,8 +15,15 @@ export class GamedayRekognitionLambdaCdkStack extends cdk.Stack {
     // apigateway
     const apiGW = BuildApiGateway(this, { projectName: projectName, stageName: stageName });
     const resourceArn = `arn:aws:apigateway:ap-northeast-1::/restapis/${apiGW.restApiId}/stages/${ stageName ? stageName : 'dev' }`;
-    BuildWaf(this, { projectName: projectName, resourceType: 'ApiGateway', resourceArn: resourceArn, rateLimit: 100, geoLimit: ['JP']})
+    const webAcl = BuildWaf(this, { projectName: projectName, resourceType: 'ApiGateway', resourceArn: resourceArn, rateLimit: 100, geoLimit: ['JP']})
 
+
+    const association = new wafv2.CfnWebACLAssociation(scope, `${projectName}WebAclAssociation`, {
+      resourceArn: resourceArn,
+      webAclArn: webAcl.attrArn
+      });
+
+    association.addDependsOn(apiGW)
     // authorizerの実装
     // IAM: https://dev.classmethod.jp/articles/api-gateway-iam-authentication-sigv4/
     // lambda: https://blog.i-tale.jp/2021/09/d15/
