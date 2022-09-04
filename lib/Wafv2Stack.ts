@@ -42,7 +42,7 @@ export interface IWafRule {
 
 // https://www.slideshare.net/AmazonWebServicesJapan/202202-aws-black-belt-online-seminar-aws-managed-rules-for-aws-waf
 // https://docs.aws.amazon.com/ja_jp/waf/latest/developerguide/aws-managed-rule-groups-list.html
-export const defaultRules: IWafRule[] = [
+const defaultRules: IWafRule[] = [
     {
         name: "AWSManagedRulesCommonRuleSet",
         priority: 1,
@@ -224,7 +224,7 @@ export class Wafv2Stack extends cdk.Stack {
 
 
         // Defination WebACL
-        const webAcl = new wafv2.CfnWebACL(this, `${projectName}WafAcl`, {
+        this.webAcl = new wafv2.CfnWebACL(this, `${projectName}WafAcl`, {
             defaultAction: { allow: {} },
             name: `${projectName}-${resourceType.toLowerCase()}-waf-web-acl`,
             scope: resourceType.toUpperCase() == 'CLOUDFRONT' ? 'CLOUDFRONT' : 'REGIONAL',
@@ -241,11 +241,14 @@ export class Wafv2Stack extends cdk.Stack {
         if (resourceArn) {
             new wafv2.CfnWebACLAssociation(this, `${projectName}WebAclAssociation`, {
                 resourceArn: resourceArn,
-                webAclArn: webAcl.attrArn
+                webAclArn: this.webAcl.attrArn
                 });
         }
     }
 
+    getAclArn() {
+        return this.webAcl.attrArn
+    }
 }
 
 // 他使えそうなルールを
