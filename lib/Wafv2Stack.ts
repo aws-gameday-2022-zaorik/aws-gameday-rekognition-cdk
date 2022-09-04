@@ -163,12 +163,12 @@ export class Wafv2Stack extends cdk.Stack {
 
             rules.push({
                 priority: priorityCount,
-                name: `${projectName}-${resourceType.toLowerCase()}-WafWebAclIpSetRule`,
+                name: `${projectName}-${resourceType.toLowerCase()}-webAclIpSetRule`,
                 action: { allow: {} },
                 visibilityConfig: {
                 sampledRequestsEnabled: true,
                 cloudWatchMetricsEnabled: true,
-                metricName: `${projectName}-${resourceType.toLowerCase()}-WafWebAclIpSetRule`,
+                metricName: `${projectName}-${resourceType.toLowerCase()}-webAclIpSetRule`,
                 },
                 statement: {
                 ipSetReferenceStatement: {
@@ -186,7 +186,7 @@ export class Wafv2Stack extends cdk.Stack {
             // Because of this, it's possible for an IP address to send requests at too high a rate for 30 seconds 
             // before AWS WAF detects and blocks it. AWS WAF can block up to 10,000 IP addresses.
             rules.push({
-                name: "rateLimitRule",
+                name: `${projectName}-${resourceType.toLowerCase()}-rateLimitRule`,
                 priority: 30,
                 action: { block: {} },
                 visibilityConfig: {
@@ -206,7 +206,7 @@ export class Wafv2Stack extends cdk.Stack {
 
         if (geoLimit != null) {
             rules.push ({
-                name: `geoLimitrule`,
+                name: `${projectName}-${resourceType.toLowerCase()}-geoLimitRule`,
                 priority: priorityCount,
                 action: { allow: {} },
                 visibilityConfig: {

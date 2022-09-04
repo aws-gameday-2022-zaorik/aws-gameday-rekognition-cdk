@@ -17,9 +17,7 @@ const { apiGW, resourceArn } = new RekgonitionStack(app,
 new Wafv2Stack(app, 'GamedayWafv2Stack', { 
     projectName: projectName, 
     resourceType: 'ApiGateway', 
-    resourceArn: resourceArn, 
-    // rateLimit: 100, 
-    // geoLimit: ['JP'] 
+    resourceArn: resourceArn,
 },
 {
     env: { region: 'ap-northeast-1' }
