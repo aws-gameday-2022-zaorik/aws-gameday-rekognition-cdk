@@ -19,21 +19,21 @@ new Wafv2Stack(app, 'GamedayWafv2Stack', {
     resourceType: 'ApiGateway', 
     resourceArn: resourceArn, 
     // rateLimit: 100, 
-    geoLimit: ['JP'] 
+    // geoLimit: ['JP'] 
 },
 {
     env: { region: 'ap-northeast-1' }
 })
-const wafArn = new Wafv2Stack(app, 'GamedayCfWafv2Stack', { 
-    projectName: projectName, 
-    resourceType: 'CloudFront', 
-    rateLimit: 100, 
-    geoLimit: ['JP'] 
-},
-{
-    env: { region: 'us-east-1' } //https://dev.classmethod.jp/articles/cloudformation-webacl-cloudfront-error/#toc-4
-}
-).getAclArn()
+// const wafArn = new Wafv2Stack(app, 'GamedayCfWafv2Stack', { 
+//     projectName: projectName, 
+//     resourceType: 'CloudFront', 
+//     rateLimit: 100, 
+//     geoLimit: ['JP'] 
+// },
+// {
+//     env: { region: 'us-east-1' } //https://dev.classmethod.jp/articles/cloudformation-webacl-cloudfront-error/#toc-4
+// }
+// ).getAclArn()
 new CloudFrontStack(app, 'GamedayCloudFrontStack',  { projectName:projectName, restApi: apiGW},
 {
     env: { region: 'ap-northeast-1' }
