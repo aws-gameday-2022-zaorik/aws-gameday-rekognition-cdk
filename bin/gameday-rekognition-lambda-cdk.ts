@@ -24,23 +24,17 @@ new Wafv2Stack(app, 'GamedayWafv2Stack', {
 {
     env: { region: 'ap-northeast-1' }
 })
-const wafArn = new Wafv2Stack(app, 'GamedayCfWafv2Stack', { 
-    projectName: projectName, 
-    resourceType: 'CloudFront', 
+
+new CloudFrontStack(app, 'GamedayCloudFrontStack',  { 
+    projectName: projectName,
+    resourceType: 'CloudFront',
+    restApi: apiGW,
     rateLimit: 100, 
     geoLimit: ['JP'] 
 },
 {
     env: { region: 'ap-northeast-1' }
 }
-).getAclArn()
-new CloudFrontStack(app, 'GamedayApiGWCloudFront',  { 
-    projectName:projectName, 
-    restApi: apiGW, 
-    wafArn: wafArn},
-    {
-        env: { region: 'ap-northeast-1' }
-    }
 )
 
 
