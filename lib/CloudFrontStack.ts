@@ -15,7 +15,6 @@ export interface ICloudFront {
 
 
 export class CloudFrontStack extends cdk.Stack {
-    public distribution: cf.Distribution
 
     constructor(scope: Construct, id: string, cfProps:ICloudFront, props?: cdk.StackProps, ) {
         super(scope, id, props);
@@ -46,7 +45,7 @@ export class CloudFrontStack extends cdk.Stack {
         // 答タイムアウトした場合にバックアップオリジンにルーティング
         // • Lambda@Edge 関数やカスタムエラーページでもオリジンフェイルオーバーが可能
 
-        this.distribution = new cf.Distribution(this, `${projectName}Distribution`, {
+        new cf.Distribution(this, `${projectName}Distribution`, {
             defaultBehavior: { 
                 origin: apiOrigin,
                 allowedMethods: cf.AllowedMethods.ALLOW_ALL, // AllOW_MEHOD
