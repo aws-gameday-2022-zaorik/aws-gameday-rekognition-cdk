@@ -6,7 +6,7 @@ import * as logs from 'aws-cdk-lib/aws-logs';
 export interface IWafProps {
     projectName: string;
     resourceType: string;
-    resourceArn: string
+    resourceArn?: string
     rateLimit?: number;
     geoLimit?: string[]
     addresses?: string[];
@@ -143,6 +143,8 @@ const defaultRules: IWafRule[] = [
 ]
 
 export class Wafv2Stack extends cdk.Stack {
+    webAcl: wafv2.CfnWebACL
+    
     constructor(scope: Construct, id: string, wafProps: IWafProps, props?: cdk.StackProps) {
         super(scope, id, props);
         const { projectName, resourceType, resourceArn, rateLimit, geoLimit, addresses  } = wafProps
@@ -157,9 +159,10 @@ export class Wafv2Stack extends cdk.Stack {
                 scope: resourceType.toUpperCase() == 'CLOUDFRONT' ? 'CLOUDFRONT' : 'REGIONAL',
                 addresses: addresses
             })
+            // https://ipranges.amazonaws.com/ip-ranges.json CloudFront IP ranges
 
             rules.push({
-                priority: 1,
+                priority: priorityCount,
                 name: 'TestWafWebAclIpSetRule',
                 action: { allow: {} },
                 visibilityConfig: {
@@ -204,7 +207,7 @@ export class Wafv2Stack extends cdk.Stack {
         if (geoLimit != null) {
             rules.push ({
                 name: `geoLimitrule`,
-                priority: 30,
+                priority: priorityCount,
                 action: { allow: {} },
                 visibilityConfig: {
                     metricName: `${projectName}-${resourceType.toLowerCase()}-geoLimitRule`,
@@ -221,7 +224,7 @@ export class Wafv2Stack extends cdk.Stack {
 
 
         // Defination WebACL
-        const webAcl = new wafv2.CfnWebACL(this, `${projectName}WafAcl`, {
+        this.webAcl = new wafv2.CfnWebACL(this, `${projectName}WafAcl`, {
             defaultAction: { allow: {} },
             name: `${projectName}-${resourceType.toLowerCase()}-waf-web-acl`,
             scope: resourceType.toUpperCase() == 'CLOUDFRONT' ? 'CLOUDFRONT' : 'REGIONAL',
@@ -232,13 +235,19 @@ export class Wafv2Stack extends cdk.Stack {
             },
             rules: rules
             });
-        
 
         
-        new wafv2.CfnWebACLAssociation(this, `${projectName}WebAclAssociation`, {
-            resourceArn: resourceArn,
-            webAclArn: webAcl.attrArn
-            });
+
+        if (resourceArn) {
+            new wafv2.CfnWebACLAssociation(this, `${projectName}WebAclAssociation`, {
+                resourceArn: resourceArn,
+                webAclArn: this.webAcl.attrArn
+                });
+        }
+    }
+    
+    getAclArn() {
+        return this.webAcl.attrArn
     }
 }
 

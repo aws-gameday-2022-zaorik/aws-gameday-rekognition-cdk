@@ -7,7 +7,7 @@ export interface IApiGatewayProps {
     stageName?: string;
 }
 
-export function BuildApiGateway (scope:Construct, props: IApiGatewayProps) : apigateway.IRestApi {
+export function BuildApiGateway (scope:Construct, props: IApiGatewayProps) : apigateway.RestApi {
         
   const projectName = props.projectName
   const accessLogGroup = new logs.LogGroup(scope, `${projectName}AccessLog`, {

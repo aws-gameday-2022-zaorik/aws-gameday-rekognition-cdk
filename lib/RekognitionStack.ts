@@ -3,11 +3,10 @@ import { Construct } from 'constructs';
 import * as iam from 'aws-cdk-lib/aws-iam'
 import * as lambda from 'aws-cdk-lib/aws-lambda'
 import * as apigateway from 'aws-cdk-lib/aws-apigateway'
-import * as wafv2 from 'aws-cdk-lib/aws-wafv2'
 import { BuildApiGateway } from './BuildApiGateway';
 
 export class RekgonitionStack extends cdk.Stack {
-  public apiGW: apigateway.IRestApi
+  public apiGW: apigateway.RestApi
   public resourceArn: string
   
   constructor(scope: Construct, id: string, projectName: string, props?: cdk.StackProps, stageName?:string ) {
