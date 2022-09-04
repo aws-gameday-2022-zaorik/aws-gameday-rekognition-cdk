@@ -123,22 +123,22 @@ const defaultRules: IWafRule[] = [
             metricName: "AWSManagedRulesAnonymousIpList",
         },
     },
-    {
-        name: "AWSManagedRulesBotControlRuleSet",
-        priority: 6,
-        statement: {
-            managedRuleGroupStatement: {
-            vendorName: "AWS",
-            name: "AWSManagedRulesBotControlRuleSet",
-            },
-        },
-        overrideAction: { none: {} },
-        visibilityConfig: {
-            cloudWatchMetricsEnabled: true,
-            sampledRequestsEnabled: true,
-            metricName: "AWSManagedRulesBotControlRuleSet",
-        },
-    },
+    // {
+    //     name: "AWSManagedRulesBotControlRuleSet",
+    //     priority: 6,
+    //     statement: {
+    //         managedRuleGroupStatement: {
+    //         vendorName: "AWS",
+    //         name: "AWSManagedRulesBotControlRuleSet",
+    //         },
+    //     },
+    //     overrideAction: { none: {} },
+    //     visibilityConfig: {
+    //         cloudWatchMetricsEnabled: true,
+    //         sampledRequestsEnabled: true,
+    //         metricName: "AWSManagedRulesBotControlRuleSet",
+    //     },
+    // },
 
 ]
 
@@ -148,7 +148,7 @@ export class Wafv2Stack extends cdk.Stack {
     constructor(scope: Construct, id: string, wafProps: IWafProps, props?: cdk.StackProps) {
         super(scope, id, props);
         const { projectName, resourceType, resourceArn, rateLimit, geoLimit, addresses  } = wafProps
-        var priorityCount: number = 7
+        var priorityCount: number = 6
         const rules = defaultRules
 
         if (addresses != null) {

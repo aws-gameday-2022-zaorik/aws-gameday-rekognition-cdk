@@ -31,7 +31,7 @@ const wafArn = new Wafv2Stack(app, 'GamedayCfWafv2Stack', {
     geoLimit: ['JP'] 
 },
 {
-    env: { region: 'us-east-1' }
+    env: { region: 'us-east-1' } //https://dev.classmethod.jp/articles/cloudformation-webacl-cloudfront-error/#toc-4
 }
 ).getAclArn()
 new CloudFrontStack(app, 'GamedayCloudFrontStack',  { projectName:projectName, restApi: apiGW},
