@@ -52,7 +52,9 @@ export class CloudFrontStack extends cdk.Stack {
                 cachePolicy: cf.CachePolicy.CACHING_OPTIMIZED,
                 viewerProtocolPolicy: cf.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
                 // https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_cloudfront.OriginRequestPolicy.html
-                originRequestPolicy: cf.OriginRequestPolicy.ALL_VIEWER
+                originRequestPolicy: new cf.OriginRequestPolicy(this, `${projectName}OriginRequestPolicy`, { 
+                    originRequestPolicyName: 'apigwPolicy', 
+                    queryStringBehavior: cf.OriginRequestQueryStringBehavior.all() } )
             },
             // https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_cloudfront.DistributionProps.html
             enableIpv6: true,
