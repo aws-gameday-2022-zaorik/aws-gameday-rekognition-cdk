@@ -18,7 +18,7 @@ new Wafv2Stack(app, 'GamedayWafv2Stack', {
     projectName: projectName, 
     resourceType: 'ApiGateway', 
     resourceArn: resourceArn, 
-    rateLimit: 100, 
+    // rateLimit: 100, 
     geoLimit: ['JP'] 
 },
 {
