@@ -59,7 +59,8 @@ export class CloudFrontStack extends cdk.Stack {
             httpVersion: cf.HttpVersion.HTTP2_AND_3,
             logBucket: cfLogBucket,
             minimumProtocolVersion: cf.SecurityPolicyProtocol.TLS_V1_2_2019,
-            priceClass: cf.PriceClass.PRICE_CLASS_ALL
+            priceClass: cf.PriceClass.PRICE_CLASS_ALL,
+            webAclId: wafArn
         }
         )
     }

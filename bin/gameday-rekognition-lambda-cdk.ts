@@ -30,6 +30,9 @@ const wafArn = new Wafv2Stack(app, 'GamedayCfWafv2Stack', {
     rateLimit: 100, 
     geoLimit: ['JP'] 
 },
+{
+    env: { region: 'ap-northeast-1' }
+}
 ).getAclArn()
 new CloudFrontStack(app, 'GamedayApiGWCloudFront',  { 
     projectName:projectName, 
