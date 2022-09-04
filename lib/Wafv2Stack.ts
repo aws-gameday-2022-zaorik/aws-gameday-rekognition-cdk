@@ -187,7 +187,7 @@ export class Wafv2Stack extends cdk.Stack {
             // before AWS WAF detects and blocks it. AWS WAF can block up to 10,000 IP addresses.
             rules.push({
                 name: "rateLimitRule",
-                priority: priorityCount,
+                priority: 30,
                 action: { block: {} },
                 visibilityConfig: {
                     metricName: `${projectName}-${resourceType.toLowerCase()}-rateLimitRule`, 
@@ -220,6 +220,7 @@ export class Wafv2Stack extends cdk.Stack {
                     }
                 }
             })
+            priorityCount += 1;
         }
 
 
