@@ -163,7 +163,7 @@ export class Wafv2Stack extends cdk.Stack {
 
             rules.push({
                 priority: priorityCount,
-                name: 'TestWafWebAclIpSetRule',
+                name: `${projectName}-${resourceType.toLowerCase()}-WafWebAclIpSetRule`,
                 action: { allow: {} },
                 visibilityConfig: {
                 sampledRequestsEnabled: true,
@@ -245,7 +245,7 @@ export class Wafv2Stack extends cdk.Stack {
                 });
         }
     }
-    
+
     getAclArn() {
         return this.webAcl.attrArn
     }
