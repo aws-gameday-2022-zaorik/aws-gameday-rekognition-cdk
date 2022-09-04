@@ -10,7 +10,7 @@ import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2'
 export interface ICloudFront {
     projectName: string, 
     restApi: apigateway.RestApi,
-    wafArn: string, 
+    wafArn?: string, 
 }
 
 

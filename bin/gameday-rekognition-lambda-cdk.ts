@@ -34,6 +34,10 @@ const wafArn = new Wafv2Stack(app, 'GamedayCfWafv2Stack', {
     env: { region: 'us-east-1' }
 }
 ).getAclArn()
-// new CloudFrontStack(app, 'GamedayCloudFrontStack',  { projectName:projectName, restApi: apiGW})
+new CloudFrontStack(app, 'GamedayCloudFrontStack',  { projectName:projectName, restApi: apiGW},
+{
+    env: { region: 'ap-northeast-1' }
+}
+)
 
 
