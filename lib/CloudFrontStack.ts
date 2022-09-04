@@ -51,6 +51,7 @@ export class CloudFrontStack extends cdk.Stack {
                 allowedMethods: cf.AllowedMethods.ALLOW_ALL, // AllOW_MEHOD
                 cachePolicy: cf.CachePolicy.CACHING_OPTIMIZED,
                 viewerProtocolPolicy: cf.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+                // https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_cloudfront.OriginRequestPolicy.html
                 originRequestPolicy: cf.OriginRequestPolicy.ALL_VIEWER
             },
             // https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_cloudfront.DistributionProps.html
