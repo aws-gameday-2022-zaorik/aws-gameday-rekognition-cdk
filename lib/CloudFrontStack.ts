@@ -10,7 +10,6 @@ import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2'
 export interface ICloudFront {
     projectName: string, 
     restApi: apigateway.RestApi,
-    wafArn?: string, 
 }
 
 
@@ -19,7 +18,7 @@ export class CloudFrontStack extends cdk.Stack {
     constructor(scope: Construct, id: string, cfProps:ICloudFront, props?: cdk.StackProps, ) {
         super(scope, id, props);
         
-        const { projectName, restApi, wafArn } = cfProps
+        const { projectName, restApi } = cfProps
         const cfLogBucket = new s3.Bucket(this, `${projectName}CfLogBucket`, { bucketName: `${projectName}-cf-log-bucket`}) 
 
         const apiOrigin = BuildOrigin(scope, { 
@@ -64,7 +63,8 @@ export class CloudFrontStack extends cdk.Stack {
             logBucket: cfLogBucket,
             minimumProtocolVersion: cf.SecurityPolicyProtocol.TLS_V1_2_2019,
             priceClass: cf.PriceClass.PRICE_CLASS_ALL,
-            webAclId: wafArn
+            // 同じリージョンのものしか参照できないので
+            webAclId: "arn:aws:wafv2:us-east-1:898207152345:global/webacl/huang-gameday-cloudfront-waf-web-acl/05400594-7d37-4b81-b8c4-1d60a8b0f176"
         }
         )
     }
