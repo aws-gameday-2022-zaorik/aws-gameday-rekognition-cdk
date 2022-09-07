@@ -26,7 +26,7 @@ new Wafv2Stack(app, 'GamedayCfWafv2Stack', {
     projectName: projectName, 
     resourceType: 'CloudFront', 
     rateLimit: 100, 
-    geoLimit: ['JP'] 
+    geoLimit: ['US'] 
 },
 {
     env: { region: 'us-east-1' } //https://dev.classmethod.jp/articles/cloudformation-webacl-cloudfront-error/#toc-4
