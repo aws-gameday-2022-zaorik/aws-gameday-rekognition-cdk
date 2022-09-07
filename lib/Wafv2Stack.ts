@@ -227,7 +227,7 @@ export class Wafv2Stack extends cdk.Stack {
         // Defination WebACL
         this.webAcl = new wafv2.CfnWebACL(this, `${projectName}WafAcl`, {
             // defaultAction: { allow: {} },
-            defaultAction: { block: {} },
+            defaultAction: { allow: {} },
             name: `${projectName}-${resourceType.toLowerCase()}-waf-web-acl`,
             scope: resourceType.toUpperCase() == 'CLOUDFRONT' ? 'CLOUDFRONT' : 'REGIONAL',
             visibilityConfig: {
