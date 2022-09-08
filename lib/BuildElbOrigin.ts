@@ -6,12 +6,11 @@ import * as origins from 'aws-cdk-lib/aws-cloudfront-origins'
 import * as s3 from 'aws-cdk-lib/aws-s3'
 import * as apigateway from 'aws-cdk-lib/aws-apigateway'
 import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2'
+import { OriginSslPolicy } from 'aws-cdk-lib/aws-cloudfront';
 
 export interface IOrigins {
     // projectName: string
-    elb?: elbv2.ILoadBalancerV2
-    // s3?: s3.IBucket
-    restApi: apigateway.RestApi
+    elb: elbv2.ILoadBalancerV2
     originProps?: {
         connectionAttempts?: number
         connectionTimeout?: cdk.Duration
@@ -27,9 +26,9 @@ export interface IOrigins {
     }
 }
 
-export function BuildOrigin(scope: Construct, props: IOrigins): origins.RestApiOrigin {
+export function BuildElbOrigin(scope: Construct, props: IOrigins): origins.LoadBalancerV2Origin {
 
-    const {restApi, originProps } = props
+    const {elb, originProps } = props
 
     // const origin = undefined
     // if (elb) {
@@ -39,7 +38,7 @@ export function BuildOrigin(scope: Construct, props: IOrigins): origins.RestApiO
     //     const origin = new origins.S3Origin(s3, originProps)
     //     return origin
     // } else if (restApi) {
-    return new origins.RestApiOrigin(restApi, originProps)
+    return new origins.LoadBalancerV2Origin(elb, originProps)
     // return origin
     // // }
 
