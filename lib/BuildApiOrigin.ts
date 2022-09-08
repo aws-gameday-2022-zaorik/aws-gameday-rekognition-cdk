@@ -9,7 +9,7 @@ import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2'
 
 export interface IOrigins {
     // projectName: string
-    elb?: elbv2.ILoadBalancerV2
+    // elb?: elbv2.ILoadBalancerV2
     // s3?: s3.IBucket
     restApi: apigateway.RestApi
     originProps?: {
@@ -27,7 +27,7 @@ export interface IOrigins {
     }
 }
 
-export function BuildOrigin(scope: Construct, props: IOrigins): origins.RestApiOrigin {
+export function BuildApiOrigin(scope: Construct, props: IOrigins): origins.RestApiOrigin {
 
     const {restApi, originProps } = props
 

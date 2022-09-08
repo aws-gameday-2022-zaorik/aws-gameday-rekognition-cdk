@@ -2,7 +2,7 @@ import * as cdk from 'aws-cdk-lib'
 import { Construct } from 'constructs';
 import * as cf from 'aws-cdk-lib/aws-cloudfront'
 import * as origins from 'aws-cdk-lib/aws-cloudfront-origins'
-import { BuildOrigin } from './BuildOrigin';
+import { BuildApiOrigin } from './BuildApiOrigin';
 import { BuildElbOrigin } from './BuildElbOrigin';
 import * as s3 from 'aws-cdk-lib/aws-s3'
 import * as apigateway from 'aws-cdk-lib/aws-apigateway'

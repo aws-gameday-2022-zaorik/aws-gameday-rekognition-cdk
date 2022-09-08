@@ -2,7 +2,7 @@ import * as cdk from 'aws-cdk-lib'
 import { Construct } from 'constructs';
 import * as cf from 'aws-cdk-lib/aws-cloudfront'
 import * as origins from 'aws-cdk-lib/aws-cloudfront-origins'
-import { BuildOrigin } from './BuildOrigin';
+import { BuildApiOrigin } from './BuildApiOrigin';
 import * as s3 from 'aws-cdk-lib/aws-s3'
 import * as apigateway from 'aws-cdk-lib/aws-apigateway'
 import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2'
@@ -21,7 +21,7 @@ export class CloudFrontStack extends cdk.Stack {
         const { projectName, restApi } = cfProps
         const cfLogBucket = new s3.Bucket(this, `${projectName}CfLogBucket`, { bucketName: `${projectName}-cf-log-bucket`}) 
 
-        const apiOrigin = BuildOrigin(scope, { 
+        const apiOrigin = BuildApiOrigin(scope, { 
             // projectName: projectName, 
             restApi: restApi, 
             originProps: { 
