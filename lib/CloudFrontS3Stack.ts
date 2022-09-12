@@ -20,7 +20,8 @@ export class CloudFrontS3Stack extends cdk.Stack {
         // create a Bucket
         const webBucket = new s3.Bucket(this, `${projectName}WebS3Bucket`, {
             bucketName: `${projectName}-web-s3`,
-            removalPolicy: cdk.RemovalPolicy.DESTROY
+            removalPolicy: cdk.RemovalPolicy.DESTROY,
+            blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL 
         }
         )
         // S3はOAIを利用し、CloudFrontのみのアクセスを実現
