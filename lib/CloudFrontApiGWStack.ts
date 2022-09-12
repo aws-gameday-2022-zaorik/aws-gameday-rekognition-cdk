@@ -13,7 +13,7 @@ export interface ICloudFront {
 }
 
 
-export class CloudFrontStack extends cdk.Stack {
+export class CloudFrontApiGWStack extends cdk.Stack {
 
     constructor(scope: Construct, id: string, cfProps:ICloudFront, props?: cdk.StackProps, ) {
         super(scope, id, props);
@@ -22,7 +22,6 @@ export class CloudFrontStack extends cdk.Stack {
         const cfLogBucket = new s3.Bucket(this, `${projectName}CfLogBucket`, { bucketName: `${projectName}-cf-log-bucket`}) 
 
         const apiOrigin = BuildApiOrigin(scope, { 
-            // projectName: projectName, 
             restApi: restApi, 
             originProps: { 
                 customHeaders: {
@@ -31,11 +30,6 @@ export class CloudFrontStack extends cdk.Stack {
                 }
             }
         )
-        // } else if (elb) {
-        //     const elbOrigin = BuildOrigin(scope, { projectName: projectName, elb: elb })
-        // } else if (s3) {
-        //     const s3Origin = BuildOrigin(scope, { projectName: projectName, s3: s3})
-        // }
         
         // S3 Distribution: https://dev.classmethod.jp/articles/i-tried-building-cloudfronts3-static-site-hosting-with-aws-cdk-v2/
         
@@ -63,7 +57,6 @@ export class CloudFrontStack extends cdk.Stack {
             logBucket: cfLogBucket,
             minimumProtocolVersion: cf.SecurityPolicyProtocol.TLS_V1_2_2019,
             priceClass: cf.PriceClass.PRICE_CLASS_ALL,
-            // 同じリージョンのものしか参照できないので
             webAclId: "arn:aws:wafv2:us-east-1:898207152345:global/webacl/huang-gameday-cloudfront-waf-web-acl/05400594-7d37-4b81-b8c4-1d60a8b0f176"
         }
         )

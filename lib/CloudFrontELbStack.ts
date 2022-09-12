@@ -29,28 +29,6 @@ export class CloudFrontElbStack extends cdk.Stack {
             elb: elb,
         }
         )
-        // const apiOrigin = BuildOrigin(scope, { 
-        //     // projectName: projectName, 
-        //     restApi: restApi, 
-        //     originProps: { 
-        //         customHeaders: {
-        //             Hoge: 'Hogo'
-        //             }
-        //         }
-        //     }
-        // )
-        // } else if (elb) {
-        //     const elbOrigin = BuildOrigin(scope, { projectName: projectName, elb: elb })
-        // } else if (s3) {
-        //     const s3Origin = BuildOrigin(scope, { projectName: projectName, s3: s3})
-        // }
-        
-        // S3 Distribution: https://dev.classmethod.jp/articles/i-tried-building-cloudfronts3-static-site-hosting-with-aws-cdk-v2/
-        
-        // オリジングループを作成し、プライマリ・セカンダリオリジンを指定
-        // • フェイルオーバー基準: オリジンがフェイルオーバー⽤に設定した 500, 502, 503 等の HTTP ステータスコードを返した場合や、接続タイムアウト/接続試⾏回数を超過/応
-        // 答タイムアウトした場合にバックアップオリジンにルーティング
-        // • Lambda@Edge 関数やカスタムエラーページでもオリジンフェイルオーバーが可能
 
         new cf.Distribution(this, `${projectName}Distribution`, {
             defaultBehavior: { 
@@ -60,7 +38,7 @@ export class CloudFrontElbStack extends cdk.Stack {
                 viewerProtocolPolicy: cf.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
                 // https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_cloudfront.OriginRequestPolicy.html
                 originRequestPolicy: new cf.OriginRequestPolicy(this, `${projectName}OriginRequestPolicy`, { 
-                    originRequestPolicyName: 'apigwPolicy', 
+                    originRequestPolicyName: 'elbPolicy', 
                     queryStringBehavior: cf.OriginRequestQueryStringBehavior.all() } )
             },
             // https://docs.aws.amazon.com/cdk/api/v2/docs/aws-cdk-lib.aws_cloudfront.DistributionProps.html

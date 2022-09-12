@@ -28,19 +28,6 @@ export interface IOrigins {
 
 export function BuildElbOrigin(scope: Construct, props: IOrigins): origins.LoadBalancerV2Origin {
 
-    const {elb, originProps } = props
-
-    // const origin = undefined
-    // if (elb) {
-    //     const origin = new origins.LoadBalancerV2Origin(elb, originProps)
-    //     return origin
-    // } else if (s3) {
-    //     const origin = new origins.S3Origin(s3, originProps)
-    //     return origin
-    // } else if (restApi) {
+    const { elb, originProps } = props
     return new origins.LoadBalancerV2Origin(elb, originProps)
-    // return origin
-    // // }
-
-    // return origin;
 }  
